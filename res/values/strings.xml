@@ -7,7 +7,10 @@
 	<string name="alLimbo"> al Limbo</string>
 	<string name="barajar">Barajando...</string>
 	<string name="noPuedesJugarCarta">No puedes jugar esa carta</string>
-	<string name="victoria">Has ganado y ya estás fuera de tu sueño</string>
+
+	<string name="victoria">¡Enhorabuena! Has salido de tu sueño</string>
+	<string name="derrota">Te sumerges en un profundo sueño del que nunca podrás salir</string>
+	<string name="aceptar">Aceptar</string>
 
     <string name="carta">Carta</string>
 

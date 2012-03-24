@@ -82,6 +82,7 @@ public class DrawableResolver {
 				result = getDrawableLaberinto(carta.getColor(), carta.getSimbolo());
 				break;
 			default:
+				Log.d(TAG, "Tipo de carta desconocido " + carta);
 				break;
 			}
 		} else {
