@@ -62,7 +62,7 @@ public class GameActivity extends Activity {
 	private Dialog buildDialogoJugar() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(R.string.jugarDescartar)
-		       .setCancelable(false)
+		       .setCancelable(true)
 		       .setPositiveButton(R.string.jugar, new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
 		        	   turnoJugar(cartaSeleccionada);
