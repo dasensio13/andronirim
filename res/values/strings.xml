@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AndrOnirim</string>
+
+    <string name="iniciar">Iniciar Juego</string>
+    <string name="numCartas">Cartas: </string>
+	<string name="alLimbo"> al Limbo</string>
+	<string name="barajar">Barajando...</string>
+	<string name="noPuedesJugarCarta">No puedes jugar esa carta</string>
+	<string name="victoria">Has ganado y ya estás fuera de tu sueño</string>
+
+    <string name="carta">Carta</string>
+
+    <string name="jugarDescartar">¿Jugar o descartar?</string>
+    <string name="jugar">Jugar</string>
+    <string name="descartar">Descartar</string>
+
+    <string name="descartar_llave">Descartar llave</string>
+    <string name="descartar_puerta">Descartar puerta</string>
+    <string name="descartar_mano">Descartar mano</string>
+    <string name="descartar_mazo">Descartar cartas del mazo</string>
+</resources>

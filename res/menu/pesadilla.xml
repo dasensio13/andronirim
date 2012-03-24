@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/descartarLlave"
+        android:title="@string/descartar_llave" />
+    <item
+        android:id="@+id/descartarPuerta"
+        android:title="@string/descartar_puerta" />
+    <item
+        android:id="@+id/descartarMano"
+        android:title="@string/descartar_mano" />
+    <item
+        android:id="@+id/descartarMazo"
+        android:title="@string/descartar_mazo" />
+</menu>
