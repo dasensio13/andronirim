@@ -2,11 +2,11 @@ package es.onirim.android;
 
 import java.util.List;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -25,7 +24,7 @@ import es.onirim.core.Carta;
 import es.onirim.core.Carta.Color;
 import es.onirim.core.Solitario;
 
-public class GameActivity extends Activity {
+public class GameActivity extends OptionsMenuActivity {
 
 	private Solitario solitario = null;
 	private ImageView cartaSeleccionada = null;
@@ -36,15 +35,29 @@ public class GameActivity extends Activity {
 
 	private static final int MAX_CARTAS_FILA = 40;
 
+	private static final String TAG = "GameActivity";
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.game);
 
-		solitario = new Solitario();
+		Solitario lastSolitario = (Solitario) getLastNonConfigurationInstance();
+		if (lastSolitario==null) {
+			solitario = new Solitario();
+		} else {
+			solitario = lastSolitario;
+			pintarPuertasObtenidas();
+			pintarLaberintoCompleto();
+			pintarDescartesCompleto();
+		}
 		pintarMano(solitario.getCartasMano());
 		setNumCartas();
+	}
+
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+	    return solitario;
 	}
 
 	@Override
@@ -61,7 +74,7 @@ public class GameActivity extends Activity {
 			dialog = buildDialogoDerrota();
 			break;
 		default:
-			dialog = null;
+			dialog = super.onCreateDialog(id);
 		}
 		return dialog;
 	}
@@ -136,9 +149,7 @@ public class GameActivity extends Activity {
 	}
 
 	private void showToast(int resourceId) {
-		Toast toast = Toast.makeText(this, resourceId, Toast.LENGTH_SHORT);
-		toast.setGravity(Gravity.CENTER, 0, 0);
-		toast.show();
+		showToast(getResources().getText(resourceId).toString());
 	}
 
 	private void showToast(String texto) {
@@ -217,8 +228,14 @@ public class GameActivity extends Activity {
 	}
 
 	private void pintarPuertaConseguida(Carta puerta) {
-		ImageView puertaConseguida = (ImageView) findViewById(getIdSiguientePuerta());
-		puertaConseguida.setImageResource(DrawableResolver.getDrawable(puerta));
+		//TODO: mejorar el Toast con un layout;
+		showToast(puerta.toString());
+		pintarPuerta(getIdSiguientePuerta(), DrawableResolver.getDrawable(puerta));
+	}
+
+	private void pintarPuerta(int idView, int idImagen) {
+		ImageView puerta = (ImageView) findViewById(idView);
+		puerta.setImageResource(idImagen);
 	}
 
 	private int getIdSiguientePuerta() {
@@ -248,6 +265,7 @@ public class GameActivity extends Activity {
 	private void turnoDescartar(View v) {
 		int index = getIndexCarta(v.getId());
 		Carta carta = solitario.cogerCartaMano(index);
+		//TODO: descarte de llaves
 		solitario.descartar(carta);
 		pintarUltimaCartaDescartes(solitario.getUltimaCartaDescartes(), solitario.getTamanoDescartes());
 		robar();
@@ -282,8 +300,7 @@ public class GameActivity extends Activity {
 		pintarCartaDescartes(carta, descartes, i);
 	}
 
-	private void pintarCartaDescartes(Carta carta, RelativeLayout descartes,
-			int index) {
+	private void pintarCartaDescartes(Carta carta, RelativeLayout descartes, int index) {
 		ImageView cartaDescarets = (ImageView) getLayoutInflater().inflate(
 				R.layout.carta, null);
 		cartaDescarets.setImageResource(DrawableResolver.getDrawable(carta));
@@ -313,12 +330,14 @@ public class GameActivity extends Activity {
 	private void robar() {
 		while (!solitario.isManoCompleta()) {
 			Carta cartaRobada = solitario.robarMazo();
-			if (cartaRobada.isLaberinto()) {
+			if (cartaRobada==null) {
+				Log.w(TAG, "carta robada nula");
+			} else if (cartaRobada.isLaberinto()) {
 				solitario.rellenarMano(cartaRobada);
 				pintarMano(solitario.getCartasMano());
 			} else {
 				// TODO: realizar acciones para puertas y pesadillas
-				showToast(cartaRobada + " al LIMBO");
+				showToast(cartaRobada.toString() + " " + getResources().getText(R.string.alLimbo));
 				solitario.insertarLimbo(cartaRobada);
 				// TODO: pintarLimbo?
 			}
@@ -333,7 +352,7 @@ public class GameActivity extends Activity {
 	}
 
 	private void comprobarDerrota() {
-		if (solitario.getNumHabitacionesMazo()==0) {
+		if (solitario.isDerrota()) {
 			showDialog(DIALOG_DERROTA);
 		}
 	}
@@ -341,5 +360,61 @@ public class GameActivity extends Activity {
 	private void setNumCartas() {
 		Integer numCartasMazo = solitario.getNumCartasMazo();
 		((TextView) findViewById(R.id.numCartas)).setText(numCartasMazo.toString());
+	}
+
+	private void pintarLaberintoCompleto() {
+		List<Carta> laberinto = solitario.getCartasLaberinto();
+		RelativeLayout layoutLaberinto = (RelativeLayout) findViewById(R.id.laberinto1);
+		int index = 0;
+		for (Carta carta : laberinto) {
+			pintarCartaLaberinto(carta, layoutLaberinto, index);			
+			if (index >= MAX_CARTAS_FILA) {
+				layoutLaberinto = (RelativeLayout) findViewById(R.id.laberinto2);
+			}
+			index++;
+		}
+	}
+
+	private void pintarDescartesCompleto() {
+		List<Carta> descartes = solitario.getDescartes();
+		RelativeLayout layoutDescartes = (RelativeLayout) findViewById(R.id.descartes);
+		int index = 0;
+		for (Carta carta : descartes) {
+			pintarCartaDescartes(carta, layoutDescartes, index);
+			index++;
+		}
+	}
+
+	private void pintarPuertasObtenidas() {
+		List<Carta> puertas = solitario.getPuertasObtenidas();
+		int index = 0;
+		for (Carta carta : puertas) {
+			pintarPuerta(getIdPuerta(index), DrawableResolver.getDrawable(carta));
+			index++;
+		}
+	}
+
+	private int getIdPuerta(int index) {
+		switch (index) {
+		case 0:
+			return R.id.puerta1;
+		case 1:
+			return R.id.puerta2;
+		case 2:
+			return R.id.puerta3;
+		case 3:
+			return R.id.puerta4;
+		case 4:
+			return R.id.puerta5;
+		case 5:
+			return R.id.puerta6;
+		case 6:
+			return R.id.puerta7;
+		case 7:
+			return R.id.puerta8;
+		default:
+			break;
+		}
+		return 0;
 	}
 }

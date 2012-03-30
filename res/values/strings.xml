@@ -4,7 +4,7 @@
 
     <string name="iniciar">Iniciar Juego</string>
     <string name="numCartas">Cartas: </string>
-	<string name="alLimbo"> al Limbo</string>
+	<string name="alLimbo">al Limbo</string>
 	<string name="barajar">Barajando...</string>
 	<string name="noPuedesJugarCarta">No puedes jugar esa carta</string>
 
@@ -22,4 +22,36 @@
     <string name="descartar_puerta">Descartar puerta</string>
     <string name="descartar_mano">Descartar mano</string>
     <string name="descartar_mazo">Descartar cartas del mazo</string>
+
+    <string name="instrucciones">Instrucciones</string>
+    <string name="detalle_instrucciones">
+	    \n* Para empezar una nueva partida selecciona la imagen central en la primera pantalla.
+	    \n* En la parte superior de la pantalla verás las puertas conseguidas.
+	    \n* Debajo de las puertas tienes tu parte del laberinto descubierto.
+	    \n* En una fila inferior y a la derecha verás la pila de descartes.
+	    \n* En la parte inferior verás el mazo de cartas con el numero de cartas que quedan y las cartas de tu mano.
+	    \n* Para jugar una carta de tu mano en el laberinto seleccionala.
+	    \n* Para descartar una carta de tu mano mantenla seleccionada y aparecerá una ventana que te permite jugarla o descartarla.
+	</string>
+    <string name="reglas">Reglas</string>
+    <string name="detalle_reglas">
+	    \nJuego básico
+		    \nPreparación
+		    \nTurno
+			    \nJugar o descartar
+			    \nRobar
+			    \nBarajar
+		    \nFin del juego
+	</string>
+    <string name="creditos">Créditos</string>
+    <string name="detalle_creditos">
+	    \nDesarrollador: David Asensio (@dasensio13)
+	    \nDiseñador: Shadi Torbey
+	    \nArtista: Élise Plessis
+	    \nDistribuidor: Pegasus Spiele / Z-Man Games
+		\nAño de publicación: 2010
+		\nWeb: http://www.zmangames.com/cardgames/onirim.htm
+		\n\nVersion 0.1 - 28/03/2012
+	    \n* Desarrollo en fase beta
+	</string>
 </resources>
