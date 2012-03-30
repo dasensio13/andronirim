@@ -4,12 +4,14 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +29,9 @@ import es.onirim.core.Solitario;
 public class GameActivity extends OptionsMenuActivity {
 
 	private Solitario solitario = null;
-	private ImageView cartaSeleccionada = null;
+
+	private static final String DRAWABLE_CARTA = "DRAWABLE_CARTA";
+	private static final String INDEX_CARTA = "INDEX_CARTA";
 
 	private static final int DIALOG_JUGAR = 0;
 	private static final int DIALOG_VICTORIA = 1;
@@ -61,11 +65,11 @@ public class GameActivity extends OptionsMenuActivity {
 	}
 
 	@Override
-	public Dialog onCreateDialog(int id) {
+	public Dialog onCreateDialog(int id, Bundle bundle) {
 		Dialog dialog = null;
 		switch (id) {
 		case DIALOG_JUGAR:
-			dialog = buildDialogoJugar();
+			dialog = buildDialogoJugar(bundle);
 			break;
 		case DIALOG_VICTORIA:
 			dialog = buildDialogoVictoria();
@@ -79,20 +83,30 @@ public class GameActivity extends OptionsMenuActivity {
 		return dialog;
 	}
 
-	private Dialog buildDialogoJugar() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(R.string.jugarDescartar)
-				.setCancelable(true)
-				.setPositiveButton(R.string.jugar,
+	private Dialog buildDialogoJugar(final Bundle bundle) {
+		Context mContext = getApplicationContext();
+		LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+		View layout = inflater.inflate(R.layout.jugar, null);
+
+		ImageView image = (ImageView) layout.findViewById(R.id.dialog_jugar_carta);
+		image.setImageResource(bundle.getInt(DRAWABLE_CARTA));
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+		builder.setView(layout)
+			.setTitle(R.string.jugarDescartar)
+			.setCancelable(true)
+			.setPositiveButton(R.string.jugar,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								turnoJugar(cartaSeleccionada);
+								turnoJugar(bundle.getInt(INDEX_CARTA));
+								removeDialog(DIALOG_JUGAR);
 							}
 						})
 				.setNegativeButton(R.string.descartar,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								turnoDescartar(cartaSeleccionada);
+								turnoDescartar(bundle.getInt(INDEX_CARTA));
+								removeDialog(DIALOG_JUGAR);
 							}
 						});
 		return builder.create();
@@ -158,6 +172,20 @@ public class GameActivity extends OptionsMenuActivity {
 		toast.show();
 	}
 
+	private void showToastPuerta(Carta puerta) {
+		LayoutInflater inflater = getLayoutInflater();
+		View layout = inflater.inflate(R.layout.puerta, null);
+
+		ImageView image = (ImageView) layout.findViewById(R.id.toast_puerta);
+		image.setImageResource(DrawableResolver.getDrawable(puerta));
+
+		Toast toast = new Toast(getApplicationContext());
+		toast.setGravity(Gravity.CENTER, 0, 0);
+		toast.setDuration(Toast.LENGTH_SHORT);
+		toast.setView(layout);
+		toast.show();
+	}
+
 	private void pintarMano(List<Carta> cartas) {
 		ImageView vCarta = (ImageView) findViewById(R.id.carta1);
 		pintarCartaMano(cartas.get(0), vCarta);
@@ -180,25 +208,28 @@ public class GameActivity extends OptionsMenuActivity {
 		vCarta.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				turnoJugar(v);
+				turnoJugar(getIndexCarta(v.getId()));
 			}
 		});
 
 		vCarta.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View v) {
-				cartaSeleccionada = (ImageView) v;
-				showDialog(DIALOG_JUGAR);
+				Bundle bundle = new Bundle();
+				int index = getIndexCarta(v.getId());
+				Carta carta = solitario.getCartaMano(index);
+				bundle.putInt(DRAWABLE_CARTA, DrawableResolver.getDrawable(carta));
+				bundle.putInt(INDEX_CARTA, index);
+				showDialog(DIALOG_JUGAR, bundle);
 				return true;
 			}
 		});
-
 	}
 
-	private void turnoJugar(View v) {
-		int index = getIndexCarta(v.getId());
-		Carta carta = solitario.cogerCartaMano(index);
+	private void turnoJugar(int index) {
+		Carta carta = solitario.getCartaMano(index);
 		if (solitario.puedoInsertarCartaLaberinto(carta)) {
+			solitario.cogerCartaMano(index);
 			solitario.insertarCartaLaberinto(carta);
 			pintarUltimaCartaLaberinto(solitario.getUltimaCartaLaberinto(), solitario.getTamanoLaberinto());
 			comprobarPuertaConseguida();
@@ -229,7 +260,7 @@ public class GameActivity extends OptionsMenuActivity {
 
 	private void pintarPuertaConseguida(Carta puerta) {
 		//TODO: mejorar el Toast con un layout;
-		showToast(puerta.toString());
+		showToastPuerta(puerta);
 		pintarPuerta(getIdSiguientePuerta(), DrawableResolver.getDrawable(puerta));
 	}
 
@@ -262,8 +293,7 @@ public class GameActivity extends OptionsMenuActivity {
 		return 0;
 	}
 
-	private void turnoDescartar(View v) {
-		int index = getIndexCarta(v.getId());
+	private void turnoDescartar(int index) {
 		Carta carta = solitario.cogerCartaMano(index);
 		//TODO: descarte de llaves
 		solitario.descartar(carta);
@@ -328,7 +358,7 @@ public class GameActivity extends OptionsMenuActivity {
 	}
 
 	private void robar() {
-		while (!solitario.isManoCompleta()) {
+		while (!solitario.isFinal()&& !solitario.isManoCompleta()) {
 			Carta cartaRobada = solitario.robarMazo();
 			if (cartaRobada==null) {
 				Log.w(TAG, "carta robada nula");
