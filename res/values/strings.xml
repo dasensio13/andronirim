@@ -5,7 +5,7 @@
     <string name="iniciar">Iniciar Juego</string>
     <string name="numCartas">Cartas: </string>
 	<string name="alLimbo">al limbo</string>
-	<string name="barajar">Barajando...</string>
+	<string name="barajar">Barajar</string>
 	<string name="noPuedesJugarCarta">No puedes jugar esa carta</string>
 
 	<string name="victoria">¡Enhorabuena! Has salido de tu sueño</string>
@@ -17,6 +17,11 @@
     <string name="jugarDescartar">¿Jugar o descartar?</string>
     <string name="jugar">Jugar</string>
     <string name="descartar">Descartar</string>
+    
+    <string name="robar">robar</string>
+    <string name="conseguida">conseguida</string>
+    <string name="jugada">jugar</string>
+    <string name="descartada">descartar</string>
 
     <string name="descartar_llave">Descartar llave</string>
     <string name="descartar_puerta">Descartar puerta</string>

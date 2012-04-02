@@ -98,13 +98,21 @@
             android:gravity="center_vertical|right" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/mensaje"
+    <ScrollView
+        android:id="@+id/scroll"
         android:layout_width="fill_parent"
         android:layout_height="80dp"
-        android:gravity="center"
-        android:text="@string/iniciar" />
-
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/roundborder">
+        <TextView
+            android:id="@+id/mensaje" 
+            android:text="@string/iniciar"
+            android:textColor="#222"
+            android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:textSize="8sp" />
+    </ScrollView>
     <!-- mazo y mano -->
 
     <LinearLayout

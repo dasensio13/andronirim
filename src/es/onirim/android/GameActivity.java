@@ -20,6 +20,7 @@ import android.view.View.OnLongClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import es.onirim.core.Carta;
@@ -64,6 +65,7 @@ public class GameActivity extends OptionsMenuActivity {
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
+		//TODO: mantener el log
 	    return solitario;
 	}
 
@@ -232,6 +234,7 @@ public class GameActivity extends OptionsMenuActivity {
 
 	private void turnoJugar(int index) {
 		Carta carta = solitario.getCartaMano(index);
+		addLog(getText(R.string.jugada) + " " + stringCartaResolver.getString(carta));
 		if (solitario.puedoInsertarCartaLaberinto(carta)) {
 			solitario.cogerCartaMano(index);
 			solitario.insertarCartaLaberinto(carta);
@@ -239,6 +242,7 @@ public class GameActivity extends OptionsMenuActivity {
 			comprobarPuertaConseguida();
 			robar();
 		} else {
+			addLog(R.string.noPuedesJugarCarta);
 			showToast(R.string.noPuedesJugarCarta);
 		}
 	}
@@ -248,6 +252,7 @@ public class GameActivity extends OptionsMenuActivity {
 			solitario.resetNumSeguidasPuerta();
 			Color color = solitario.getColorUltimaCartaLaberinto();
 			Carta puerta = solitario.robarPuerta(color);
+			addLog(stringCartaResolver.getString(puerta) + " " + getText(R.string.conseguida));
 			if (puerta!=null) {
 				solitario.insertarPuerta(puerta);
 				pintarPuertaConseguida(puerta);
@@ -300,6 +305,7 @@ public class GameActivity extends OptionsMenuActivity {
 
 	private void turnoDescartar(int index) {
 		Carta carta = solitario.cogerCartaMano(index);
+		addLog(getText(R.string.descartada) + " " + stringCartaResolver.getString(carta));
 		//TODO: descarte de llaves
 		solitario.descartar(carta);
 		pintarUltimaCartaDescartes(solitario.getUltimaCartaDescartes(), solitario.getTamanoDescartes());
@@ -365,6 +371,7 @@ public class GameActivity extends OptionsMenuActivity {
 	private void robar() {
 		while (!solitario.isFinal()&& !solitario.isManoCompleta()) {
 			Carta cartaRobada = solitario.robarMazo();
+			addLog(getText(R.string.robar) + " " + stringCartaResolver.getString(cartaRobada));
 			if (cartaRobada==null) {
 				Log.w(TAG, "carta robada nula");
 			} else if (cartaRobada.isLaberinto()) {
@@ -372,7 +379,7 @@ public class GameActivity extends OptionsMenuActivity {
 				pintarMano(solitario.getCartasMano());
 			} else {
 				// TODO: realizar acciones para puertas y pesadillas
-				showToast(stringCartaResolver.getString(cartaRobada) + " " + getResources().getText(R.string.alLimbo));
+				addLog(stringCartaResolver.getString(cartaRobada) + " " + getResources().getText(R.string.alLimbo));
 				solitario.insertarLimbo(cartaRobada);
 				// TODO: pintarLimbo?
 			}
@@ -381,7 +388,7 @@ public class GameActivity extends OptionsMenuActivity {
 		if (!solitario.isLimboEmpty()) {
 			solitario.insertarMazo(solitario.vaciarLimbo());
 			solitario.barajarMazo();
-			showToast(R.string.barajar);
+			addLog(R.string.barajar);
 		}
 		setNumCartas();
 	}
@@ -451,5 +458,16 @@ public class GameActivity extends OptionsMenuActivity {
 			break;
 		}
 		return 0;
+	}
+
+	private void addLog(int idTexto) {
+		addLog(getResources().getString(idTexto));
+	}
+
+	private void addLog(String logText) {
+		TextView text = (TextView)findViewById(R.id.mensaje);
+		ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
+		text.setText(text.getText() + "\n" + logText);
+		scroll.fullScroll(View.FOCUS_DOWN);
 	}
 }
