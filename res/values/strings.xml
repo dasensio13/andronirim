@@ -4,7 +4,7 @@
 
     <string name="iniciar">Iniciar Juego</string>
     <string name="numCartas">Cartas: </string>
-	<string name="alLimbo">al Limbo</string>
+	<string name="alLimbo">al limbo</string>
 	<string name="barajar">Barajando...</string>
 	<string name="noPuedesJugarCarta">No puedes jugar esa carta</string>
 
@@ -54,4 +54,18 @@
 		\n\nVersion 0.1 - 28/03/2012
 	    \n* Desarrollo en fase beta
 	</string>
+
+    <string name="pesadilla">pesadilla</string>
+    <string name="puerta">puerta</string>
+    <string name="laberinto">habitación</string>
+
+    <string name="llave">llave</string>
+    <string name="sol">sol</string>
+    <string name="luna">luna</string>
+
+    <string name="rojo">rojo</string>
+    <string name="roja">roja</string>
+    <string name="verde">verde</string>
+    <string name="marron">marrón</string>
+    <string name="azul">azul</string>
 </resources>

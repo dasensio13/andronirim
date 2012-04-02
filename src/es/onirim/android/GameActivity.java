@@ -29,6 +29,7 @@ import es.onirim.core.Solitario;
 public class GameActivity extends OptionsMenuActivity {
 
 	private Solitario solitario = null;
+	private StringCartaResolver stringCartaResolver = null;
 
 	private static final String DRAWABLE_CARTA = "DRAWABLE_CARTA";
 	private static final String INDEX_CARTA = "INDEX_CARTA";
@@ -45,6 +46,8 @@ public class GameActivity extends OptionsMenuActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game);
+
+		stringCartaResolver = new StringCartaResolver(getResources());
 
 		Solitario lastSolitario = (Solitario) getLastNonConfigurationInstance();
 		if (lastSolitario==null) {
@@ -113,6 +116,7 @@ public class GameActivity extends OptionsMenuActivity {
 	}
 
 	private Dialog buildDialogoVictoria() {
+		//TODO: mostrar ultima puerta conseguida en el dialogo
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(R.string.victoria)
 				.setCancelable(false)
@@ -259,8 +263,9 @@ public class GameActivity extends OptionsMenuActivity {
 	}
 
 	private void pintarPuertaConseguida(Carta puerta) {
-		//TODO: mejorar el Toast con un layout;
-		showToastPuerta(puerta);
+		if (!solitario.isFinal()) {
+			showToastPuerta(puerta);
+		}
 		pintarPuerta(getIdSiguientePuerta(), DrawableResolver.getDrawable(puerta));
 	}
 
@@ -367,7 +372,7 @@ public class GameActivity extends OptionsMenuActivity {
 				pintarMano(solitario.getCartasMano());
 			} else {
 				// TODO: realizar acciones para puertas y pesadillas
-				showToast(cartaRobada.toString() + " " + getResources().getText(R.string.alLimbo));
+				showToast(stringCartaResolver.getString(cartaRobada) + " " + getResources().getText(R.string.alLimbo));
 				solitario.insertarLimbo(cartaRobada);
 				// TODO: pintarLimbo?
 			}
