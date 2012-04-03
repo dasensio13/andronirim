@@ -17,10 +17,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import es.onirim.core.Carta;
@@ -193,24 +195,16 @@ public class GameActivity extends OptionsMenuActivity {
 	}
 
 	private void pintarMano(List<Carta> cartas) {
-		ImageView vCarta = (ImageView) findViewById(R.id.carta1);
-		pintarCartaMano(cartas.get(0), vCarta);
-
-		vCarta = (ImageView) findViewById(R.id.carta2);
-		pintarCartaMano(cartas.get(1), vCarta);
-
-		vCarta = (ImageView) findViewById(R.id.carta3);
-		pintarCartaMano(cartas.get(2), vCarta);
-
-		vCarta = (ImageView) findViewById(R.id.carta4);
-		pintarCartaMano(cartas.get(3), vCarta);
-
-		vCarta = (ImageView) findViewById(R.id.carta5);
-		pintarCartaMano(cartas.get(4), vCarta);
+		int i = 0;
+		for (Carta carta : cartas) {
+			pintarCartaMano(carta, i, false);
+			i++;
+		}
 	}
 
-	private void pintarCartaMano(Carta carta, ImageView vCarta) {
-		vCarta.setImageResource(DrawableResolver.getDrawable(carta));
+	private void pintarCartaMano(Carta carta, int index, boolean anim) {
+		ImageView vCarta = (ImageView) findViewById(getIdCarta(index));
+		cambiarCarta(carta, vCarta, anim);
 		vCarta.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -230,6 +224,28 @@ public class GameActivity extends OptionsMenuActivity {
 				return true;
 			}
 		});
+	}
+
+	private void cambiarCarta(final Carta carta, final ImageView vCarta, boolean animado) {
+		if (animado) {
+			Animation anim = AnimationUtils.loadAnimation(GameActivity.this, R.anim.carta_va);
+			AnimationListener aListener = new AnimationListener() {
+				@Override
+				public void onAnimationStart(Animation animation) {}
+				@Override
+				public void onAnimationRepeat(Animation animation) {}
+				@Override
+				public void onAnimationEnd(Animation animation) {
+					vCarta.setImageResource(DrawableResolver.getDrawable(carta));
+					Animation anim = AnimationUtils.loadAnimation(GameActivity.this, R.anim.carta_viene);
+					vCarta.startAnimation(anim);
+				}
+			};
+			anim.setAnimationListener(aListener);
+			vCarta.startAnimation(anim);
+		} else {
+			vCarta.setImageResource(DrawableResolver.getDrawable(carta));
+		}
 	}
 
 	private void turnoJugar(int index) {
@@ -375,8 +391,8 @@ public class GameActivity extends OptionsMenuActivity {
 			if (cartaRobada==null) {
 				Log.w(TAG, "carta robada nula");
 			} else if (cartaRobada.isLaberinto()) {
-				solitario.rellenarMano(cartaRobada);
-				pintarMano(solitario.getCartasMano());
+				int posicion = solitario.rellenarMano(cartaRobada);
+				pintarCartaMano(cartaRobada, posicion, true);
 			} else {
 				// TODO: realizar acciones para puertas y pesadillas
 				addLog(stringCartaResolver.getString(cartaRobada) + " " + getResources().getText(R.string.alLimbo));
@@ -460,14 +476,30 @@ public class GameActivity extends OptionsMenuActivity {
 		return 0;
 	}
 
+	private int getIdCarta(int index) {
+		switch (index) {
+		case 0:
+			return R.id.carta1;
+		case 1:
+			return R.id.carta2;
+		case 2:
+			return R.id.carta3;
+		case 3:
+			return R.id.carta4;
+		case 4:
+			return R.id.carta5;
+		default:
+			break;
+		}
+		return 0;
+	}
+
 	private void addLog(int idTexto) {
 		addLog(getResources().getString(idTexto));
 	}
 
 	private void addLog(String logText) {
 		TextView text = (TextView)findViewById(R.id.mensaje);
-		ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
-		text.setText(text.getText() + "\n" + logText);
-		scroll.fullScroll(View.FOCUS_DOWN);
+		text.setText(logText + "\n" + text.getText());
 	}
 }
