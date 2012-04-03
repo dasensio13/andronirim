@@ -1,6 +1,8 @@
 package es.onirim.android;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -36,6 +38,8 @@ public class GameActivity extends OptionsMenuActivity {
 
 	private static final String DRAWABLE_CARTA = "DRAWABLE_CARTA";
 	private static final String INDEX_CARTA = "INDEX_CARTA";
+	private static final String SOLITARIO = "SOLITARIO";
+	private static final String LOG = "LOG";
 
 	private static final int DIALOG_JUGAR = 0;
 	private static final int DIALOG_VICTORIA = 1;
@@ -52,14 +56,17 @@ public class GameActivity extends OptionsMenuActivity {
 
 		stringCartaResolver = new StringCartaResolver(getResources());
 
-		Solitario lastSolitario = (Solitario) getLastNonConfigurationInstance();
-		if (lastSolitario==null) {
+		Map<String, Object> config = (Map<String, Object>)getLastNonConfigurationInstance();
+		if (config==null) {
 			solitario = new Solitario();
 		} else {
-			solitario = lastSolitario;
+			solitario = (Solitario)config.get(SOLITARIO);
 			pintarPuertasObtenidas();
 			pintarLaberintoCompleto();
 			pintarDescartesCompleto();
+			CharSequence log = (CharSequence)config.get(LOG);
+			TextView text = (TextView)findViewById(R.id.mensaje);
+			text.setText(log);
 		}
 		pintarMano(solitario.getCartasMano());
 		setNumCartas();
@@ -67,8 +74,11 @@ public class GameActivity extends OptionsMenuActivity {
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
-		//TODO: mantener el log
-	    return solitario;
+		Map<String, Object> config = new HashMap<String, Object>();
+		config.put(SOLITARIO, solitario);
+		TextView logMessage = (TextView)findViewById(R.id.mensaje);
+		config.put(LOG, logMessage.getText());
+	    return config;
 	}
 
 	@Override
