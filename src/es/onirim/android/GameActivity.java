@@ -29,6 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import es.onirim.core.Carta;
 import es.onirim.core.Carta.Color;
+import es.onirim.core.Carta.Simbolo;
+import es.onirim.core.Carta.Tipo;
 import es.onirim.core.Solitario;
 
 public class GameActivity extends OptionsMenuActivity {
@@ -37,6 +39,7 @@ public class GameActivity extends OptionsMenuActivity {
 	private StringCartaResolver stringCartaResolver = null;
 
 	private static final String DRAWABLE_CARTA = "DRAWABLE_CARTA";
+	private static final String DRAWABLE_LLAVE = "DRAWABLE_LLAVE";
 	private static final String INDEX_CARTA = "INDEX_CARTA";
 	private static final String SOLITARIO = "SOLITARIO";
 	private static final String LOG = "LOG";
@@ -44,6 +47,8 @@ public class GameActivity extends OptionsMenuActivity {
 	private static final int DIALOG_JUGAR = 0;
 	private static final int DIALOG_VICTORIA = 1;
 	private static final int DIALOG_DERROTA = 2;
+	private static final int DIALOG_PESADILLA = 3;
+	private static final int DIALOG_PUERTA = 4;
 
 	private static final int MAX_CARTAS_FILA = 40;
 
@@ -89,10 +94,16 @@ public class GameActivity extends OptionsMenuActivity {
 			dialog = buildDialogoJugar(bundle);
 			break;
 		case DIALOG_VICTORIA:
-			dialog = buildDialogoVictoria();
+			dialog = buildDialogoVictoria(bundle);
 			break;
 		case DIALOG_DERROTA:
 			dialog = buildDialogoDerrota();
+			break;
+		case DIALOG_PESADILLA:
+			dialog = buildDialogoPesadilla(bundle);
+			break;
+		case DIALOG_PUERTA:
+			dialog = buildDialogoPuerta(bundle);
 			break;
 		default:
 			dialog = super.onCreateDialog(id);
@@ -103,16 +114,16 @@ public class GameActivity extends OptionsMenuActivity {
 	private Dialog buildDialogoJugar(final Bundle bundle) {
 		Context mContext = getApplicationContext();
 		LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
-		View layout = inflater.inflate(R.layout.jugar, null);
+		View layout = inflater.inflate(R.layout.carta_dialog, null);
 
-		ImageView image = (ImageView) layout.findViewById(R.id.dialog_jugar_carta);
+		ImageView image = (ImageView) layout.findViewById(R.id.carta_dialog);
 		image.setImageResource(bundle.getInt(DRAWABLE_CARTA));
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
 		builder.setView(layout)
-			.setTitle(R.string.jugarDescartar)
-			.setCancelable(true)
-			.setPositiveButton(R.string.jugar,
+				.setTitle(R.string.jugarDescartar)
+				.setCancelable(true)
+				.setPositiveButton(R.string.jugar,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								turnoJugar(bundle.getInt(INDEX_CARTA));
@@ -129,11 +140,88 @@ public class GameActivity extends OptionsMenuActivity {
 		return builder.create();
 	}
 
-	private Dialog buildDialogoVictoria() {
-		//TODO: mostrar ultima puerta conseguida en el dialogo
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(R.string.victoria)
-				.setCancelable(false)
+	private Dialog buildDialogoPesadilla(final Bundle bundle) {
+		Context mContext = getApplicationContext();
+		LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+		View layout = inflater.inflate(R.layout.carta_dialog, null);
+
+		ImageView image = (ImageView) layout.findViewById(R.id.carta_dialog);
+		image.setImageResource(bundle.getInt(DRAWABLE_CARTA));
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+		builder.setView(layout)
+				.setTitle(R.string.title_dialog_pesadilla)
+				.setPositiveButton(R.string.descartar_mano,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								// TODO
+								turnoRobar();
+								removeDialog(id);
+							}
+						})
+				.setNegativeButton(R.string.descartar_mazo,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								// TODO
+								turnoRobar();
+								removeDialog(id);
+							}
+						})
+				.setNeutralButton(R.string.descartar_llave,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								// TODO
+								turnoRobar();
+								removeDialog(id);
+							}
+						});
+		// TODO: descartar puerta
+		return builder.create();
+	}
+
+	private Dialog buildDialogoPuerta(final Bundle bundle) {
+		Context mContext = getApplicationContext();
+		LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+		View layout = inflater.inflate(R.layout.obtener_puerta_dialog, null);
+
+		ImageView image = (ImageView) layout.findViewById(R.id.puerta_obtener);
+		image.setImageResource(bundle.getInt(DRAWABLE_CARTA));
+		image = (ImageView) layout.findViewById(R.id.llave_obtener);
+		image.setImageResource(bundle.getInt(DRAWABLE_LLAVE));
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+		builder.setView(layout)
+				.setTitle(R.string.title_dialog_puerta)
+				.setPositiveButton(R.string.si,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								// TODO
+								turnoRobar();
+								removeDialog(id);
+							}
+						})
+				.setNegativeButton(R.string.no,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								// TODO
+								turnoRobar();
+								removeDialog(id);
+							}
+						});
+		return builder.create();
+	}
+
+	private Dialog buildDialogoVictoria(Bundle bundle) {
+		Context mContext = getApplicationContext();
+		LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+		View layout = inflater.inflate(R.layout.carta_dialog, null);
+
+		ImageView image = (ImageView) layout.findViewById(R.id.carta_dialog);
+		image.setImageResource(bundle.getInt(DRAWABLE_CARTA));
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+		builder.setView(layout)
+				.setTitle(R.string.victoria)
 				.setPositiveButton(R.string.aceptar,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
@@ -144,9 +232,16 @@ public class GameActivity extends OptionsMenuActivity {
 	}
 
 	private Dialog buildDialogoDerrota() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(R.string.derrota)
-				.setCancelable(false)
+		Context mContext = getApplicationContext();
+		LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+		View layout = inflater.inflate(R.layout.carta_dialog, null);
+
+		ImageView image = (ImageView) layout.findViewById(R.id.carta_dialog);
+		image.setImageResource(R.drawable.pesadilla);
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+		builder.setView(layout)
+				.setTitle(R.string.derrota)
 				.setPositiveButton(R.string.aceptar,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
@@ -181,10 +276,7 @@ public class GameActivity extends OptionsMenuActivity {
 	}
 
 	private void showToast(int resourceId) {
-		showToast(getResources().getText(resourceId).toString());
-	}
-
-	private void showToast(String texto) {
+		String texto = getResources().getText(resourceId).toString();
 		Toast toast = Toast.makeText(this, texto, Toast.LENGTH_SHORT);
 		toast.setGravity(Gravity.CENTER, 0, 0);
 		toast.show();
@@ -192,10 +284,11 @@ public class GameActivity extends OptionsMenuActivity {
 
 	private void showToastPuerta(Carta puerta) {
 		LayoutInflater inflater = getLayoutInflater();
-		View layout = inflater.inflate(R.layout.puerta, null);
+		View layout = inflater.inflate(R.layout.puerta_obtenida, null);
 
-		ImageView image = (ImageView) layout.findViewById(R.id.toast_puerta);
-		image.setImageResource(DrawableResolver.getDrawable(puerta));
+		TextView text = (TextView) layout.findViewById(R.id.puerta_obtenida);
+		text.setText(stringCartaResolver.getString(puerta) + " " + getText(R.string.conseguida));
+		text.setCompoundDrawablesWithIntrinsicBounds(null, null, null, getResources().getDrawable(DrawableResolver.getDrawable(puerta)));
 
 		Toast toast = new Toast(getApplicationContext());
 		toast.setGravity(Gravity.CENTER, 0, 0);
@@ -266,7 +359,7 @@ public class GameActivity extends OptionsMenuActivity {
 			solitario.insertarCartaLaberinto(carta);
 			pintarUltimaCartaLaberinto(solitario.getUltimaCartaLaberinto(), solitario.getTamanoLaberinto());
 			comprobarPuertaConseguida();
-			robar();
+			turnoRobar();
 		} else {
 			addLog(R.string.noPuedesJugarCarta);
 			showToast(R.string.noPuedesJugarCarta);
@@ -282,14 +375,16 @@ public class GameActivity extends OptionsMenuActivity {
 			if (puerta!=null) {
 				solitario.insertarPuerta(puerta);
 				pintarPuertaConseguida(puerta);
-				comprobarVictoria();
+				comprobarVictoria(puerta);
 			}
 		}
 	}
 
-	private void comprobarVictoria() {
+	private void comprobarVictoria(Carta puerta) {
 		if (solitario.isVictoria()) {
-			showDialog(DIALOG_VICTORIA);
+			Bundle bundle = new Bundle();
+			bundle.putInt(DRAWABLE_CARTA, DrawableResolver.getDrawable(puerta));
+			showDialog(DIALOG_VICTORIA, bundle);
 		}
 	}
 
@@ -335,7 +430,7 @@ public class GameActivity extends OptionsMenuActivity {
 		//TODO: descarte de llaves
 		solitario.descartar(carta);
 		pintarUltimaCartaDescartes(solitario.getUltimaCartaDescartes(), solitario.getTamanoDescartes());
-		robar();
+		turnoRobar();
 	}
 
 	private void pintarUltimaCartaLaberinto(Carta carta, int tamanoLaberinto) {
@@ -350,13 +445,10 @@ public class GameActivity extends OptionsMenuActivity {
 		pintarCartaLaberinto(carta, layoutLaberinto, i);
 	}
 
-	private void pintarCartaLaberinto(Carta carta, RelativeLayout laberinto,
-			int index) {
-		ImageView cartaLaberinto = (ImageView) getLayoutInflater().inflate(
-				R.layout.carta, null);
+	private void pintarCartaLaberinto(Carta carta, RelativeLayout laberinto, int index) {
+		ImageView cartaLaberinto = (ImageView) getLayoutInflater().inflate(R.layout.carta, null);
 		cartaLaberinto.setImageResource(DrawableResolver.getDrawable(carta));
-		LayoutParams params = new RelativeLayout.LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.FILL_PARENT);
+		LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.FILL_PARENT);
 		params.setMargins(10 * index, 0, 0, 0);
 		laberinto.addView(cartaLaberinto, params);
 	}
@@ -394,29 +486,52 @@ public class GameActivity extends OptionsMenuActivity {
 		}
 	}
 
-	private void robar() {
-		while (!solitario.isFinal()&& !solitario.isManoCompleta()) {
+	private void turnoRobar() {
+		if (!solitario.isFinal() && !solitario.isManoCompleta()) {
 			Carta cartaRobada = solitario.robarMazo();
 			addLog(getText(R.string.robar) + " " + stringCartaResolver.getString(cartaRobada));
 			if (cartaRobada==null) {
 				Log.w(TAG, "carta robada nula");
+				turnoRobar();
 			} else if (cartaRobada.isLaberinto()) {
 				int posicion = solitario.rellenarMano(cartaRobada);
 				pintarCartaMano(cartaRobada, posicion, true);
-			} else {
-				// TODO: realizar acciones para puertas y pesadillas
-				addLog(stringCartaResolver.getString(cartaRobada) + " " + getResources().getText(R.string.alLimbo));
-				solitario.insertarLimbo(cartaRobada);
-				// TODO: pintarLimbo?
+				turnoRobar();
+			} else if (cartaRobada.isPesadilla()) {
+				// TODO: realizar acciones para pesadilla
+				Bundle bundle = new Bundle();
+				bundle.putInt(DRAWABLE_CARTA, DrawableResolver.getDrawable(cartaRobada));
+				showDialog(DIALOG_PESADILLA, bundle);
+			} else if (cartaRobada.isPuerta()){
+				// TODO: realizar acciones para puerta
+				if (solitario.tieneLlaveMano(cartaRobada.getColor())) {
+					Bundle bundle = new Bundle();
+					bundle.putInt(DRAWABLE_CARTA, DrawableResolver.getDrawable(cartaRobada));
+					bundle.putInt(DRAWABLE_LLAVE, DrawableResolver.getDrawable(new Carta(Tipo.LABERINTO, cartaRobada.getColor(), Simbolo.LLAVE)));
+					showDialog(DIALOG_PUERTA, bundle);
+					solitario.insertarLimbo(cartaRobada); //TODO
+				} else {
+					addLog(stringCartaResolver.getString(cartaRobada) + " " + getResources().getText(R.string.alLimbo));
+					solitario.insertarLimbo(cartaRobada);
+					turnoRobar();
+				}
+				// TODO: ¿pintarLimbo?
 			}
 			comprobarDerrota();
+			setNumCartas();
+		} else {
+			comprobarDerrota();
+			turnoBarajar();
+			setNumCartas();
 		}
+	}
+
+	private void turnoBarajar() {
 		if (!solitario.isLimboEmpty()) {
 			solitario.insertarMazo(solitario.vaciarLimbo());
 			solitario.barajarMazo();
 			addLog(R.string.barajar);
 		}
-		setNumCartas();
 	}
 
 	private void comprobarDerrota() {
@@ -509,6 +624,7 @@ public class GameActivity extends OptionsMenuActivity {
 	}
 
 	private void addLog(String logText) {
+		Log.d(TAG, logText);
 		TextView text = (TextView)findViewById(R.id.mensaje);
 		text.setText(logText + "\n" + text.getText());
 	}

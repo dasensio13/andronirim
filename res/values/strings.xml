@@ -11,6 +11,7 @@
 	<string name="victoria">¡Enhorabuena! Has salido de tu sueño</string>
 	<string name="derrota">Te sumerges en un profundo sueño del que nunca podrás salir</string>
 	<string name="aceptar">Aceptar</string>
+	<string name="cancelar">Cancelar</string>
 
     <string name="carta">Carta</string>
 
@@ -22,11 +23,6 @@
     <string name="conseguida">conseguida</string>
     <string name="jugada">jugar</string>
     <string name="descartada">descartar</string>
-
-    <string name="descartar_llave">Descartar llave</string>
-    <string name="descartar_puerta">Descartar puerta</string>
-    <string name="descartar_mano">Descartar mano</string>
-    <string name="descartar_mazo">Descartar cartas del mazo</string>
 
     <string name="instrucciones">Instrucciones</string>
     <string name="detalle_instrucciones">
@@ -73,4 +69,14 @@
     <string name="verde">verde</string>
     <string name="marron">marrón</string>
     <string name="azul">azul</string>
+
+    <string name="title_dialog_pesadilla">Resolver pesadilla</string>
+    <string name="descartar_llave">Descartar llave</string>
+    <string name="descartar_puerta">Descartar puerta</string>
+    <string name="descartar_mano">Descartar mano</string>
+    <string name="descartar_mazo">Descartar cartas del mazo</string>
+
+    <string name="title_dialog_puerta">¿Usar llave?</string>
+    <string name="si">Si</string>
+    <string name="no">No</string>
 </resources>

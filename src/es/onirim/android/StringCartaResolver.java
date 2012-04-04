@@ -83,7 +83,7 @@ public class StringCartaResolver {
 	}
 
 	public String getString(Carta carta) {
-		Log.d(TAG, carta!=null?carta.toString():"Carta nula");
+		//Log.d(TAG, carta!=null?carta.toString():"Carta nula");
 		String result = "";
 		if (carta!=null) {
 			switch (carta.getTipo()) {
@@ -97,7 +97,7 @@ public class StringCartaResolver {
 				result = getStringLaberinto(carta.getColor(), carta.getSimbolo());
 				break;
 			default:
-				Log.d(TAG, "Tipo de carta desconocido " + carta);
+				Log.w(TAG, "Tipo de carta desconocido " + carta);
 				break;
 			}
 		} else {

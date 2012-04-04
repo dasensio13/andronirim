@@ -68,7 +68,7 @@ public class DrawableResolver {
 	}
 
 	public static int getDrawable(Carta carta) {
-		Log.d(TAG, carta!=null?carta.toString():"Carta nula");
+		//Log.d(TAG, carta!=null?carta.toString():"Carta nula");
 		int result = R.drawable.back;
 		if (carta!=null) {
 			switch (carta.getTipo()) {
@@ -82,7 +82,7 @@ public class DrawableResolver {
 				result = getDrawableLaberinto(carta.getColor(), carta.getSimbolo());
 				break;
 			default:
-				Log.d(TAG, "Tipo de carta desconocido " + carta);
+				Log.w(TAG, "Tipo de carta desconocido " + carta);
 				break;
 			}
 		} else {
