@@ -7,5 +7,6 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="/onirim-core/lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="/onirim-core/lib/log4j-1.2.15.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/onirim-core"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
