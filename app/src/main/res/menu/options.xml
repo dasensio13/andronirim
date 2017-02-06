@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:showAsAction="ifRoom"
+        android:id="@+id/creditos"
+        android:title="@string/creditos"
+        android:icon="@android:drawable/ic_menu_info_details" />
+    <item
+        android:showAsAction="ifRoom"
+        android:id="@+id/reglas"
+        android:title="@string/reglas"
+        android:icon="@android:drawable/ic_menu_directions" />
+    <item
+        android:showAsAction="ifRoom"
+        android:id="@+id/instrucciones"
+        android:title="@string/instrucciones"
+        android:icon="@android:drawable/ic_menu_help" />
+</menu>

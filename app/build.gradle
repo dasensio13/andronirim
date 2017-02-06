@@ -1,0 +1,28 @@
+apply plugin: 'com.android.application'
+
+repositories {
+    mavenLocal()
+}
+
+android {
+    compileSdkVersion 11
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        applicationId "dasensio.android.onirim"
+        minSdkVersion 11
+        targetSdkVersion 11
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+dependencies {
+    compile 'dasensio.java.onirim:onirim-core:0.0.1-SNAPSHOT'
+
+}
